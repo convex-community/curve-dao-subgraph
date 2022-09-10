@@ -1,5 +1,50 @@
-type ExampleEntity @entity {
+enum EscrowType {
+  DEPOSIT_FOR,
+  CREATE_LOCK,
+  INCREASE_LOCK_AMOUNT,
+  INCREASE_UNLOCK_TIME,
+  WITHDRAW
+}
+
+type Platform @entity {
   id: ID!
-  count: BigInt!
-  admin: Bytes! # address
+  totalVeCrv: BigInt!
+  totalCrv: BigInt!
+}
+
+type DAOPower @entity {
+  id: ID!
+  block: BigInt!
+  timestamp: BigInt!
+  # total supply of veCRV
+  totalPower: BigInt!
+}
+
+type User @entity {
+  id: ID!
+  balance: UserBalance! @derivedFrom(field: "user")
+  escrows: [VotingEscrows!]! @derivedFrom(field: "user")
+}
+
+type UserBalance @entity {
+  id: ID!
+  startTx: Bytes!
+  user: User!
+  CRVLocked: BigInt!
+  lockStart: BigInt!
+  unlockTime: BigInt!
+  weight: BigInt!
+}
+
+type VotingEscrow @entity {
+  id: ID!
+  user: User!
+  value: BigInt!
+  oldValue: BigInt
+  lockStart: BigInt
+  unlockTime: BigInt
+  oldUnlockTime: BigInt
+  type: EscrowType!
+  totalPower: BigInt!
+  timestamp: BigInt!
 }
