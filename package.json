@@ -1,0 +1,28 @@
+{
+  "name": "curve-dao",
+  "license": "MIT",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ convex-community/curve-dao",
+    "create-local": "graph create --node http://localhost:8020/ convex-community/curve-dao",
+    "remove-local": "graph remove --node http://localhost:8020/ convex-community/curve-dao",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 convex-community/curve-dao"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.30.3",
+    "@graphprotocol/graph-ts": "0.27.0",
+    "@typescript-eslint/eslint-plugin": "^4.0.0",
+    "@typescript-eslint/parser": "^4.0.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.0.0",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "^2.0.0",
+    "typescript": "^4.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --cache --fix",
+    "*.{js,ts,css,md}": "prettier --write"
+  }
+}
