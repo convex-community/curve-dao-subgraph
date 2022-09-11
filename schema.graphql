@@ -1,4 +1,4 @@
-enum EscrowType {
+enum LockType {
   DEPOSIT_FOR,
   CREATE_LOCK,
   INCREASE_LOCK_AMOUNT,
@@ -9,42 +9,47 @@ enum EscrowType {
 type Platform @entity {
   id: ID!
   totalVeCrv: BigInt!
-  totalCrv: BigInt!
+  totalCrvLocked: BigInt!
+  crvSupply: BigInt!
 }
 
-type DAOPower @entity {
+type HistoricalPowerSnapshots @entity {
   id: ID!
   block: BigInt!
   timestamp: BigInt!
   # total supply of veCRV
-  totalPower: BigInt!
+  totalVeCrv: BigInt!
+  # total amount of CRV locked in contract
+  totalCrvLocked: BigInt!
+  # total amount of CRV minted
+  crvSupply: BigInt!
 }
 
 type User @entity {
   id: ID!
   balance: UserBalance! @derivedFrom(field: "user")
-  escrows: [VotingEscrows!]! @derivedFrom(field: "user")
+  locks: [Lock!]! @derivedFrom(field: "user")
 }
 
 type UserBalance @entity {
   id: ID!
   startTx: Bytes!
   user: User!
-  CRVLocked: BigInt!
+  crvLocked: BigInt!
   lockStart: BigInt!
   unlockTime: BigInt!
-  weight: BigInt!
 }
 
-type VotingEscrow @entity {
+type Lock @entity {
   id: ID!
   user: User!
+  tx: Bytes!
   value: BigInt!
-  oldValue: BigInt
-  lockStart: BigInt
-  unlockTime: BigInt
-  oldUnlockTime: BigInt
-  type: EscrowType!
-  totalPower: BigInt!
+  lockStart: BigInt!
+  unlockTime: BigInt!
+  previousUnlockTime: BigInt!
+  totalLocked: BigInt!
+  previousTotalLocked: BigInt!
+  type: LockType!
   timestamp: BigInt!
 }
