@@ -10,6 +10,7 @@ import {
 } from "../generated/schema"
 import {BigInt} from "@graphprotocol/graph-ts";
 import {BIG_INT_ONE, OWNERSHIP, PARAMETER, PARAMETER_VOTING_ADDRESS} from "../packages/constants";
+import { ipfs } from '@graphprotocol/graph-ts'
 
 export function handleStartVote(event: StartVoteEvent): void {
   let contract = Voting.bind(event.address)
@@ -21,7 +22,8 @@ export function handleStartVote(event: StartVoteEvent): void {
   proposal.creator = event.params.creator
   proposal.startDate = voteInfo.value2
   proposal.snapshotBlock = voteInfo.value3
-  proposal.metadata = event.params.metadata
+  proposal.ipfsMetadata = event.params.metadata
+  proposal.metadata = ipfs.cat(event.params.metadata)
   proposal.minBalance = event.params.minBalance
   proposal.minTime = event.params.minTime
   proposal.totalSupply = event.params.totalSupply

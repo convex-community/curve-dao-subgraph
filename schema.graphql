@@ -67,7 +67,8 @@ type Proposal @entity {
   creator: Bytes!
   startDate: BigInt!
   snapshotBlock: BigInt!
-  metadata: String!
+  ipfsMetadata: String!
+  metadata: Bytes
   minBalance: BigInt!
   minTime: BigInt!
   totalSupply: BigInt!
