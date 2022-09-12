@@ -1,5 +1,5 @@
 import {Address, BigInt, Bytes} from "@graphprotocol/graph-ts";
-import {HistoricalPowerSnapshots, Lock} from "../../generated/schema";
+import {PowerSnapshot, Lock} from "../../generated/schema";
 import {getUser, getUserBalance} from "./user";
 import {VotingEscrow} from "../../generated/VotingEscrow/VotingEscrow";
 import {CRV_ADDRESS, VOTING_ESCROW_ADDRESS} from "../../packages/constants";
@@ -46,7 +46,7 @@ export function createLock(tx: Bytes,
     platform.totalCrvLocked = escrowContract.supply()
     platform.crvSupply = crvTokenContract.totalSupply()
 
-    const dao = new HistoricalPowerSnapshots(lock.id)
+    const dao = new PowerSnapshot(lock.id)
     dao.block = block
     dao.timestamp = timestamp
     dao.totalVeCrv = platform.totalVeCrv

@@ -13,7 +13,7 @@ type Platform @entity {
   crvSupply: BigInt!
 }
 
-type HistoricalPowerSnapshots @entity {
+type PowerSnapshot @entity {
   id: ID!
   block: BigInt!
   timestamp: BigInt!
