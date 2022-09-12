@@ -29,3 +29,53 @@ dataSources:
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
       file: ./src/mappings-escrow.ts
+  - kind: ethereum
+    name: OwnershipVoting
+    network: mainnet
+    source:
+      address: "0xE478de485ad2fe566d49342Cbd03E49ed7DB3356"
+      abi: Voting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - StartVote
+        - CastVote
+        - ExecuteVote
+      abis:
+        - name: Voting
+          file: ./abis/Voting.json
+      eventHandlers:
+        - event: StartVote(indexed uint256,indexed address,string,uint256,uint256,uint256,uint256)
+          handler: handleStartVote
+        - event: CastVote(indexed uint256,indexed address,bool,uint256)
+          handler: handleCastVote
+        - event: ExecuteVote(indexed uint256)
+          handler: handleExecuteVote
+      file: ./src/mappings-vote.ts
+  - kind: ethereum
+    name: ParameterVoting
+    network: mainnet
+    source:
+      address: "0xBCfF8B0b9419b9A88c44546519b1e909cF330399"
+      abi: Voting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - StartVote
+        - CastVote
+        - ExecuteVote
+      abis:
+        - name: Voting
+          file: ./abis/Voting.json
+      eventHandlers:
+        - event: StartVote(indexed uint256,indexed address,string,uint256,uint256,uint256,uint256)
+          handler: handleStartVote
+        - event: CastVote(indexed uint256,indexed address,bool,uint256)
+          handler: handleCastVote
+        - event: ExecuteVote(indexed uint256)
+          handler: handleExecuteVote
+      file: ./src/mappings-vote.ts

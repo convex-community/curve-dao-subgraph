@@ -6,6 +6,11 @@ enum LockType {
   WITHDRAW
 }
 
+enum VoteType {
+  OWNERSHIP,
+  PARAMETER
+}
+
 type Platform @entity {
   id: ID!
   totalVeCrv: BigInt!
@@ -52,4 +57,35 @@ type Lock @entity {
   previousTotalLocked: BigInt!
   type: LockType!
   timestamp: BigInt!
+}
+
+type Proposal @entity {
+  id: ID!
+  tx: Bytes!
+  voteId: BigInt!
+  voteType: VoteType!
+  creator: Bytes!
+  startDate: BigInt!
+  metadata: String!
+  minBalance: BigInt!
+  minTime: BigInt!
+  totalSupply: BigInt!
+  creatorVotingPower: BigInt!
+  voteFor: BigInt!
+  voteAgainst: BigInt!
+  executed: Boolean!
+  script: Bytes!
+}
+
+type Vote @entity {
+  id: ID!
+  voteId: BigInt!
+  voter: Bytes!
+  supports: Boolean!
+  stake: BigInt!
+}
+
+type Execution @entity {
+  id: ID!
+  voteId: BigInt!
 }
