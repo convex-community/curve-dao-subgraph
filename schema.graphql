@@ -66,20 +66,25 @@ type Proposal @entity {
   voteType: VoteType!
   creator: Bytes!
   startDate: BigInt!
+  snapshotBlock: BigInt!
   metadata: String!
   minBalance: BigInt!
   minTime: BigInt!
   totalSupply: BigInt!
   creatorVotingPower: BigInt!
-  voteFor: BigInt!
-  voteAgainst: BigInt!
+  votesFor: BigInt!
+  votesAgainst: BigInt!
+  votes: [Vote!]! @derivedFrom(field: "proposal")
+  voteCount: BigInt!
   executed: Boolean!
+  execution: Execution! @derivedFrom(field: "proposal")
   script: Bytes!
 }
 
 type Vote @entity {
   id: ID!
-  voteId: BigInt!
+  tx: Bytes!
+  proposal: Proposal!
   voter: Bytes!
   supports: Boolean!
   stake: BigInt!
@@ -87,5 +92,6 @@ type Vote @entity {
 
 type Execution @entity {
   id: ID!
-  voteId: BigInt!
+  tx: Bytes!
+  proposal: Proposal!
 }
