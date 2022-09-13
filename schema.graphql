@@ -68,7 +68,7 @@ type Proposal @entity {
   startDate: BigInt!
   snapshotBlock: BigInt!
   ipfsMetadata: String!
-  metadata: Bytes
+  metadata: String!
   minBalance: BigInt!
   minTime: BigInt!
   totalSupply: BigInt!
@@ -85,6 +85,7 @@ type Proposal @entity {
 type Vote @entity {
   id: ID!
   tx: Bytes!
+  voteId: BigInt!
   proposal: Proposal!
   voter: Bytes!
   supports: Boolean!
@@ -94,5 +95,6 @@ type Vote @entity {
 type Execution @entity {
   id: ID!
   tx: Bytes!
+  voteId: BigInt!
   proposal: Proposal!
 }

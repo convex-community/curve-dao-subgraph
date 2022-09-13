@@ -1,4 +1,6 @@
 specVersion: 0.0.4
+features:
+  - ipfsOnEthereumContracts
 schema:
   file: ./schema.graphql
 dataSources:
@@ -35,6 +37,7 @@ dataSources:
     source:
       address: "0xE478de485ad2fe566d49342Cbd03E49ed7DB3356"
       abi: Voting
+      startBlock: 10648599
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -60,6 +63,7 @@ dataSources:
     source:
       address: "0xBCfF8B0b9419b9A88c44546519b1e909cF330399"
       abi: Voting
+      startBlock: 10649517
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
