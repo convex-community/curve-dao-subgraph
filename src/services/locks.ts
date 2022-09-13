@@ -2,7 +2,7 @@ import {Address, BigInt, Bytes} from "@graphprotocol/graph-ts";
 import {PowerSnapshot, Lock} from "../../generated/schema";
 import {getUser, getUserBalance} from "./user";
 import {VotingEscrow} from "../../generated/VotingEscrow/VotingEscrow";
-import {CRV_ADDRESS, VOTING_ESCROW_ADDRESS} from "../../packages/constants";
+import {CRV_ADDRESS, VOTING_ESCROW_ADDRESS} from "const";
 import {getLockType} from "./locktype";
 import {getPlatform} from "./platform";
 import {CRVToken} from "../../generated/VotingEscrow/CRVToken";

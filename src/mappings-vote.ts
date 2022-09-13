@@ -9,9 +9,9 @@ import {
   Execution
 } from "../generated/schema"
 import {BigInt, Bytes} from "@graphprotocol/graph-ts";
-import {BIG_INT_ONE, OWNERSHIP, PARAMETER, PARAMETER_VOTING_ADDRESS} from "../packages/constants";
+import {BIG_INT_ONE, OWNERSHIP, PARAMETER, PARAMETER_VOTING_ADDRESS} from "const";
 import { ipfs } from '@graphprotocol/graph-ts'
-import {parseIpfsResult} from "../packages/utils";
+import {parseIpfsResult} from "utils";
 
 export function handleStartVote(event: StartVoteEvent): void {
   let contract = Voting.bind(event.address)

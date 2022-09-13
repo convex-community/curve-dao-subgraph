@@ -2,7 +2,7 @@ import {
     CREATE_LOCK,
     DEPOSIT_FOR,
     INCREASE_LOCK_AMOUNT, INCREASE_UNLOCK_TIME, WITHDRAW
-} from "../../packages/constants";
+} from "const";
 
 export function getLockType(typeIndex: i32): string {
     switch(typeIndex) {
