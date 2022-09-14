@@ -1,22 +1,19 @@
 import {
   StartVote as StartVoteEvent,
   CastVote as CastVoteEvent,
-  ExecuteVote as ExecuteVoteEvent, Voting
-} from "../generated/OwnershipVoting/Voting"
-import {
-  Proposal,
-  Vote,
-  Execution
-} from "../generated/schema"
-import {BigInt, Bytes} from "@graphprotocol/graph-ts";
-import {BIG_INT_ONE, OWNERSHIP, PARAMETER, PARAMETER_VOTING_ADDRESS} from "const";
+  ExecuteVote as ExecuteVoteEvent,
+  Voting,
+} from '../generated/OwnershipVoting/Voting'
+import { Proposal, Vote, Execution } from '../generated/schema'
+import { BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { BIG_INT_ONE, OWNERSHIP, PARAMETER, PARAMETER_VOTING_ADDRESS } from 'const'
 import { ipfs } from '@graphprotocol/graph-ts'
-import {parseIpfsResult} from "utils";
+import { parseIpfsResult } from 'utils'
 
 export function handleStartVote(event: StartVoteEvent): void {
-  let contract = Voting.bind(event.address)
-  let voteInfo = contract.getVote(event.params.voteId)
-  let proposal = new Proposal(event.address.toHexString() + '-' + event.params.voteId.toString())
+  const contract = Voting.bind(event.address)
+  const voteInfo = contract.getVote(event.params.voteId)
+  const proposal = new Proposal(event.address.toHexString() + '-' + event.params.voteId.toString())
   proposal.tx = event.transaction.hash
   proposal.voteId = event.params.voteId
   proposal.voteType = event.address == PARAMETER_VOTING_ADDRESS ? PARAMETER : OWNERSHIP
@@ -27,13 +24,13 @@ export function handleStartVote(event: StartVoteEvent): void {
   let ipfsResult: Bytes | null = null
   let retries = 0
   while (!ipfsResult) {
-    ipfsResult = ipfs.cat(event.params.metadata.replace("ipfs:", ""))
+    ipfsResult = ipfs.cat(event.params.metadata.replace('ipfs:', ''))
     retries += 1
     if (retries > 3) {
       break
     }
   }
-  proposal.metadata = ipfsResult ? parseIpfsResult(ipfsResult.toHexString()) : ""
+  proposal.metadata = ipfsResult ? parseIpfsResult(ipfsResult.toHexString()) : ''
   proposal.minBalance = event.params.minBalance
   proposal.minTime = event.params.minTime
   proposal.totalSupply = event.params.totalSupply
@@ -47,11 +44,11 @@ export function handleStartVote(event: StartVoteEvent): void {
 }
 
 export function handleCastVote(event: CastVoteEvent): void {
-  let vote = new Vote(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString() + "-" + event.params.voteId.toString()
+  const vote = new Vote(
+    event.transaction.hash.toHex() + '-' + event.logIndex.toString() + '-' + event.params.voteId.toString()
   )
   const proposalId = event.address.toHexString() + '-' + event.params.voteId.toString()
-  let proposal = Proposal.load(proposalId)
+  const proposal = Proposal.load(proposalId)
   if (!proposal) {
     return
   }
@@ -65,19 +62,16 @@ export function handleCastVote(event: CastVoteEvent): void {
 
   if (vote.supports) {
     proposal.votesFor = proposal.votesFor.plus(vote.stake)
-  }
-  else {
+  } else {
     proposal.votesAgainst = proposal.votesAgainst.plus(vote.stake)
   }
   proposal.voteCount = proposal.voteCount.plus(BIG_INT_ONE)
 }
 
 export function handleExecuteVote(event: ExecuteVoteEvent): void {
-  let exec = new Execution(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
+  const exec = new Execution(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   const proposalId = event.address.toHexString() + '-' + event.params.voteId.toString()
-  let proposal = Proposal.load(proposalId)
+  const proposal = Proposal.load(proposalId)
   if (!proposal) {
     return
   }
@@ -88,4 +82,3 @@ export function handleExecuteVote(event: ExecuteVoteEvent): void {
   proposal.executed = true
   proposal.save()
 }
-
