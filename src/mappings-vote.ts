@@ -66,6 +66,7 @@ export function handleCastVote(event: CastVoteEvent): void {
     proposal.votesAgainst = proposal.votesAgainst.plus(vote.stake)
   }
   proposal.voteCount = proposal.voteCount.plus(BIG_INT_ONE)
+  proposal.save()
 }
 
 export function handleExecuteVote(event: ExecuteVoteEvent): void {
