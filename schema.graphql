@@ -84,6 +84,8 @@ type Proposal @entity {
   votesAgainst: BigInt!
   votes: [Vote!]! @derivedFrom(field: "proposal")
   voteCount: BigInt!
+  supportRequired: BigInt!
+  minAcceptQuorum: BigInt!
   executed: Boolean!
   execution: Execution! @derivedFrom(field: "proposal")
   script: Bytes!

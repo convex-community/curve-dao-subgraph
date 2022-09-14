@@ -20,6 +20,8 @@ export function handleStartVote(event: StartVoteEvent): void {
   proposal.creator = event.params.creator
   proposal.startDate = voteInfo.value2
   proposal.snapshotBlock = voteInfo.value3
+  proposal.supportRequired = voteInfo.value4
+  proposal.minAcceptQuorum = voteInfo.value5
   proposal.ipfsMetadata = event.params.metadata
   let ipfsResult: Bytes | null = null
   let retries = 0
