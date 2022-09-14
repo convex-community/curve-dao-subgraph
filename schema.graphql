@@ -16,6 +16,11 @@ type Platform @entity {
   totalVeCrv: BigInt!
   totalCrvLocked: BigInt!
   crvSupply: BigInt!
+  poolCount: BigInt!
+  pools: [Pool!]! @derivedFrom(field: "platform")
+  gauges: [Gauge!] @derivedFrom(field: "platform")
+  gaugeIds: [String!]!
+  snapshotTimes: [SnapshotTime!] @derivedFrom(field: "platform")
 }
 
 type PowerSnapshot @entity {
@@ -59,6 +64,8 @@ type Lock @entity {
   timestamp: BigInt!
 }
 
+### Vote tracking
+
 type Proposal @entity {
   id: ID!
   tx: Bytes!
@@ -97,4 +104,95 @@ type Execution @entity {
   tx: Bytes!
   voteId: BigInt!
   proposal: Proposal!
+}
+
+### Gauges tracking
+
+type GaugeLiquidity @entity {
+  id: ID!
+  user: Bytes!
+  gauge: Gauge!
+  originalBalance: BigInt!
+  originalSupply: BigInt!
+  workingBalance: BigInt!
+  workingSupply: BigInt!
+  timestamp: BigInt!
+  block: BigInt!
+  tx: Bytes!
+}
+
+type GaugeDeposit @entity {
+  id: ID!
+  gauge: Gauge!
+  provider: Bytes!
+  value: BigInt!
+}
+
+type GaugeWithdraw @entity {
+  id: ID!
+  gauge: Gauge!
+  provider: Bytes!
+  value: BigInt!
+}
+
+type Gauge @entity {
+  id: ID!
+  address: Bytes!
+  type: GaugeType!
+  platform: Platform!
+  pool: Pool!
+  created: BigInt!
+  block: BigInt!
+  tx: Bytes!
+
+  weights: [GaugeWeight!] @derivedFrom(field: "gauge")
+  emissions: [Emission!] @derivedFrom(field: "gauge")
+}
+
+type Pool @entity {
+  id: ID!
+  lpToken: Bytes!
+  address: Bytes!
+  name: String!
+  platform: Platform!
+  gauges: [Gauge!] @derivedFrom(field: "pool")
+  emissions: [Emission!] @derivedFrom(field: "pool")
+}
+
+type SnapshotTime @entity {
+  id: ID!
+  platform: Platform!
+}
+
+type GaugeWeight @entity {
+  id: ID!
+  gauge: Gauge!
+  timestamp: BigInt!
+  block: BigInt!
+  weight: BigDecimal!
+}
+
+type Emission @entity {
+  id: ID!
+  gauge: Gauge!
+  pool: Pool!
+  timestamp: BigInt!
+  block: BigInt!
+  crvAmount: BigDecimal!
+  value: BigDecimal!
+}
+
+type GaugeType @entity {
+  id: ID!
+  name: String!
+  weight: BigDecimal!
+  gaugeCount: BigInt!
+  gauges: [Gauge!] @derivedFrom(field: "type")
+}
+
+type GaugeTotalWeight @entity {
+  id: ID!
+  timestamp: BigInt!
+  block: BigInt!
+  weight: BigDecimal!
 }

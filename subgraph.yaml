@@ -83,3 +83,79 @@ dataSources:
         - event: ExecuteVote(indexed uint256)
           handler: handleExecuteVote
       file: ./src/mappings-vote.ts
+  - kind: ethereum
+    name: GaugeController
+    network: mainnet
+    source:
+      address: '0x2f50d538606fa9edd2b11e2446beb18c9d5846bb'
+      abi: GaugeController
+      startBlock: 10647875
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Gauge
+        - GaugeType
+        - GaugeWeight
+        - GaugeTotalWeight
+        - Pool
+        - Platform
+        - PoolSnapshot
+        - Emission
+      abis:
+        - name: GaugeController
+          file: ./abis/GaugeController.json
+        - name: LiquidityGauge
+          file: ./abis/LiquidityGauge.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: CurveRegistry
+          file: ./abis/CurveRegistry.json
+        - name: Factory
+          file: ./abis/UniswapV2Factory.json
+        - name: Pair
+          file: ./abis/UniswapV2Pair.json
+        - name: FactoryV3
+          file: ./abis/UniswapV3Factory.json
+        - name: Quoter
+          file: ./abis/UniswapV3Quoter.json
+        - name: CRVToken
+          file: ./abis/CRVToken.json
+      eventHandlers:
+        - event: AddType(string,int128)
+          handler: handleAddType
+        - event: NewGauge(address,int128,uint256)
+          handler: handleNewGauge
+        - event: NewGaugeWeight(address,uint256,uint256,uint256)
+          handler: handleNewGaugeWeight
+        - event: NewTypeWeight(int128,uint256,uint256,uint256)
+          handler: handleNewTypeWeight
+        - event: VoteForGauge(uint256,address,address,uint256)
+          handler: handleVoteForGauge
+      file: ./src/mappings-gauge.ts
+templates:
+  - name: LiquidityGaugeTemplate
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: LiquidityGauge
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - GaugeLiquidity
+      abis:
+        - name: LiquidityGauge
+          file: ./abis/LiquidityGauge.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: UpdateLiquidityLimit(address,uint256,uint256,uint256,uint256)
+          handler: handleUpdateLiquidityLimit
+        - event: UpdateLiquidityLimit(indexed address,uint256,uint256,uint256,uint256)
+          handler: handleUpdateLiquidityLimit
+        - event: Withdraw(indexed address,uint256)
+          handler: handleWithdraw
+      file: ./src/mappings-gauge.ts
