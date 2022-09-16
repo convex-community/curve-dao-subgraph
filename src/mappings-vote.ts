@@ -60,6 +60,7 @@ export function handleCastVote(event: CastVoteEvent): void {
   vote.voter = event.params.voter
   vote.supports = event.params.supports
   vote.stake = event.params.stake
+  vote.timestamp = event.block.timestamp
   vote.save()
 
   if (vote.supports) {

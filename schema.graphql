@@ -99,6 +99,7 @@ type Vote @entity {
   voter: Bytes!
   supports: Boolean!
   stake: BigInt!
+  timestamp: BigInt!
 }
 
 type Execution @entity {
