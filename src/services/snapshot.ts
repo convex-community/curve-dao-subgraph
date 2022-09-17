@@ -90,6 +90,7 @@ export function createAllSnapshots(timestamp: BigInt, block: BigInt): void {
       emission.value = emission.crvAmount.times(crvPrice)
 
       emission.pool = gauge.pool
+      emission.save()
       if (
         Address.fromString(gauge.pool) == Address.zero() || // non-mainnet emissions
         block.toI32() < 12667823 // no registry before this block
@@ -98,7 +99,10 @@ export function createAllSnapshots(timestamp: BigInt, block: BigInt): void {
       }
       const pool = getPool(Address.fromString(gauge.pool))
       pool.save()
+      gauge.pool = pool.id
+      emission.pool = pool.id
+      emission.save()
+      gauge.save()
     }
-    emission.save()
   }
 }

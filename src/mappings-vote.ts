@@ -28,7 +28,8 @@ export function handleStartVote(event: StartVoteEvent): void {
   while (!ipfsResult) {
     ipfsResult = ipfs.cat(event.params.metadata.replace('ipfs:', ''))
     retries += 1
-    if (retries > 1) {
+    if (retries > 0) {
+      // we don't retry for now
       break
     }
   }

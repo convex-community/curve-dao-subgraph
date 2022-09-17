@@ -364,6 +364,32 @@
     "gas": 1969
   },
   {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "name",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "gas": 13398
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "symbol",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "gas": 11151
+  },
+  {
     "name": "working_balances",
     "outputs": [
       {
@@ -515,7 +541,12 @@
     "type": "function",
     "name": "is_killed",
     "inputs": [],
-    "outputs": [{ "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "gas": 3648
   }
 ]

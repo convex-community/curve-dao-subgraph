@@ -78,13 +78,17 @@ export function handleNewGauge(event: NewGauge): void {
   gauge.tx = event.transaction.hash
 
   // Associate gauge to an LP token
-  const lpToken = LiquidityGauge.bind(event.params.addr).try_lp_token()
+  const gaugeContract = LiquidityGauge.bind(event.params.addr)
+  const lpToken = gaugeContract.try_lp_token()
 
   if (!lpToken.reverted) {
     gauge.pool = lpToken.value.toHexString()
   } else {
     gauge.pool = Address.zero().toHexString()
   }
+
+  const nameResult = gaugeContract.try_name()
+  gauge.name = nameResult.reverted ? '' : nameResult.value
 
   platform.save()
   gauge.save()

@@ -141,6 +141,7 @@ type GaugeWithdraw @entity {
 type Gauge @entity {
   id: ID!
   address: Bytes!
+  name: String!
   type: GaugeType!
   platform: Platform!
   pool: Pool!
