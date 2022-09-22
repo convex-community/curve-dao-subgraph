@@ -39,6 +39,9 @@ type User @entity {
   id: ID!
   balance: UserBalance! @derivedFrom(field: "user")
   locks: [Lock!]! @derivedFrom(field: "user")
+  proposals: [Proposal!]! @derivedFrom(field: "creator")
+  votes: [Vote!]! @derivedFrom(field: "voter")
+  gaugeWeightVotes: [GaugeWeightVote!]! @derivedFrom(field: "user")
 }
 
 type UserBalance @entity {
@@ -71,7 +74,7 @@ type Proposal @entity {
   tx: Bytes!
   voteId: BigInt!
   voteType: VoteType!
-  creator: Bytes!
+  creator: User!
   startDate: BigInt!
   snapshotBlock: BigInt!
   ipfsMetadata: String!
@@ -96,7 +99,7 @@ type Vote @entity {
   tx: Bytes!
   voteId: BigInt!
   proposal: Proposal!
-  voter: Bytes!
+  voter: User!
   supports: Boolean!
   stake: BigInt!
   timestamp: BigInt!
@@ -199,4 +202,14 @@ type GaugeTotalWeight @entity {
   timestamp: BigInt!
   block: BigInt!
   weight: BigDecimal!
+}
+
+
+type GaugeWeightVote @entity {
+  id: ID!
+  tx: Bytes!
+  timestamp: BigInt!
+  user: User!
+  weight: BigDecimal!
+  gauge: Bytes!
 }

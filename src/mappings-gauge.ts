@@ -9,6 +9,7 @@ import {
   GaugeTotalWeight,
   GaugeType,
   GaugeWeight,
+  GaugeWeightVote,
   GaugeWithdraw,
 } from '../generated/schema'
 import {
@@ -25,7 +26,7 @@ import { getPlatform } from './services/platform'
 import { createAllSnapshots } from './services/snapshot'
 import { LiquidityGaugeTemplate } from '../generated/templates'
 import { Deposit, UpdateLiquidityLimit, Withdraw } from '../generated/templates/LiquidityGaugeTemplate/LiquidityGauge'
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { registerGaugeType } from './services/gauges'
 
 export function handleAddType(event: AddType): void {
@@ -111,31 +112,51 @@ export function handleNewGauge(event: NewGauge): void {
   LiquidityGaugeTemplate.create(event.params.addr)
 }
 
-export function handleNewGaugeWeight(event: NewGaugeWeight): void {
-  const gauge = Gauge.load(event.params.gauge_address.toHexString())
+function _updateGaugeWeights(
+  gaugeAddress: Address,
+  controllerAddress: Address,
+  isNew: boolean,
+  weight: BigInt,
+  block: BigInt,
+  timestamp: BigInt
+): void {
+  const gauge = Gauge.load(gaugeAddress.toHexString())
 
   if (gauge != null) {
-    const gaugeController = GaugeController.bind(event.address)
+    const gaugeController = GaugeController.bind(controllerAddress)
 
-    const nextWeek = getIntervalFromTimestamp(event.block.timestamp.plus(WEEK), WEEK)
+    const nextWeek = getIntervalFromTimestamp(timestamp.plus(WEEK), WEEK)
 
     // Save gauge weight
     const gaugeWeight = new GaugeWeight(gauge.id + '-' + nextWeek.toString())
     gaugeWeight.gauge = gauge.id
     gaugeWeight.timestamp = nextWeek
-    gaugeWeight.block = event.block.number
-    gaugeWeight.weight = event.params.weight.toBigDecimal()
+    gaugeWeight.block = block
+    gaugeWeight.weight = isNew
+      ? weight.toBigDecimal()
+      : gaugeController.points_weight(gaugeAddress, nextWeek).value0.toBigDecimal()
     gaugeWeight.save()
 
     // Save total weight
     const totalWeight = new GaugeTotalWeight(nextWeek.toString())
     totalWeight.timestamp = nextWeek
-    totalWeight.block = event.block.number
+    totalWeight.block = block
     totalWeight.weight = gaugeController.points_total(nextWeek).toBigDecimal().div(BIG_DECIMAL_1E18)
     totalWeight.save()
 
-    createAllSnapshots(event.block.timestamp, event.block.number)
+    createAllSnapshots(timestamp, block)
   }
+}
+
+export function handleNewGaugeWeight(event: NewGaugeWeight): void {
+  _updateGaugeWeights(
+    event.params.gauge_address,
+    event.address,
+    true,
+    event.params.weight,
+    event.block.number,
+    event.block.timestamp
+  )
 }
 
 export function handleNewTypeWeight(event: NewTypeWeight): void {
@@ -154,30 +175,23 @@ export function handleNewTypeWeight(event: NewTypeWeight): void {
 }
 
 export function handleVoteForGauge(event: VoteForGauge): void {
-  const gauge = Gauge.load(event.params.gauge_addr.toHexString())
-
-  if (gauge != null) {
-    const gaugeController = GaugeController.bind(event.address)
-
-    const nextWeek = getIntervalFromTimestamp(event.block.timestamp.plus(WEEK), WEEK)
-
-    // Save gauge weight
-    const gaugeWeight = new GaugeWeight(gauge.id + '-' + nextWeek.toString())
-    gaugeWeight.gauge = gauge.id
-    gaugeWeight.timestamp = nextWeek
-    gaugeWeight.block = event.block.number
-    gaugeWeight.weight = gaugeController.points_weight(event.params.gauge_addr, nextWeek).value0.toBigDecimal()
-    gaugeWeight.save()
-
-    // Save total weight
-    const totalWeight = new GaugeTotalWeight(nextWeek.toString())
-    totalWeight.timestamp = nextWeek
-    totalWeight.block = event.block.number
-    totalWeight.weight = gaugeController.points_total(nextWeek).toBigDecimal().div(BIG_DECIMAL_1E18)
-    totalWeight.save()
-
-    createAllSnapshots(event.block.timestamp, event.block.number)
-  }
+  _updateGaugeWeights(
+    event.params.gauge_addr,
+    event.address,
+    false,
+    event.params.weight,
+    event.block.number,
+    event.block.timestamp
+  )
+  const gaugeVote = new GaugeWeightVote(
+    event.params.user.toHexString() + '-' + event.params.weight.toString() + '-' + event.transaction.hash.toHexString()
+  )
+  gaugeVote.tx = event.transaction.hash
+  gaugeVote.timestamp = event.block.timestamp
+  gaugeVote.user = event.params.user.toHexString()
+  gaugeVote.weight = event.params.weight.toBigDecimal()
+  gaugeVote.gauge = event.params.gauge_addr
+  gaugeVote.save()
 }
 
 export function handleUpdateLiquidityLimit(event: UpdateLiquidityLimit): void {
