@@ -148,6 +148,7 @@ type Gauge @entity {
   type: GaugeType!
   platform: Platform!
   pool: Pool!
+  isKilled: Boolean!
   created: BigInt!
   block: BigInt!
   tx: Bytes!

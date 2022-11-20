@@ -69,6 +69,7 @@ export function handleNewGauge(event: NewGauge): void {
   const gauge = new Gauge(event.params.addr.toHexString())
   gauge.address = event.params.addr
   gauge.type = gaugeType.id
+  gauge.isKilled = false
   gauge.platform = platform.id
   const gaugeIds = platform.gaugeIds
   gaugeIds.push(event.params.addr.toHexString())

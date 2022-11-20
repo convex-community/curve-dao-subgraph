@@ -50,6 +50,8 @@ export function createAllSnapshots(timestamp: BigInt, block: BigInt): void {
     const gaugeContract = LiquidityGauge.bind(Address.fromString(gaugeId))
     const gaugeKilledResult = gaugeContract.try_is_killed()
     if (!gaugeKilledResult.reverted && gaugeKilledResult.value) {
+      gauge.isKilled = true
+      gauge.save()
       log.info('Killed gauge: {}', [gauge.id])
       continue
     }
