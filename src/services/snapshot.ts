@@ -80,7 +80,6 @@ export function createAllSnapshots(timestamp: BigInt, block: BigInt): void {
       emission.value = BigDecimal.zero()
     }
     emission.timestamp = thisWeek
-    emission.block = block
     emission.gauge = gauge.id
     if (gaugeWeight) {
       const gaugeType = GaugeType.load(gauge.type)

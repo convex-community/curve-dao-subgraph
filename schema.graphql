@@ -12,205 +12,337 @@ enum VoteType {
 }
 
 type Platform @entity {
+  """ Entity ID """
   id: ID!
+  """ Total supply of veCRV """
   totalVeCrv: BigInt!
+  """ Total amount of CRV locked """
   totalCrvLocked: BigInt!
+  """ Total supply of CRV """
   crvSupply: BigInt!
+  """ Pool count (internal use) """
   poolCount: BigInt!
+  """ All pools """
   pools: [Pool!]! @derivedFrom(field: "platform")
+  """ All gauges """
   gauges: [Gauge!] @derivedFrom(field: "platform")
+  """ Gauge IDs (internal use) """
   gaugeIds: [String!]!
+  """ Snapshot times """
   snapshotTimes: [SnapshotTime!] @derivedFrom(field: "platform")
 }
 
 type PowerSnapshot @entity {
+  """ Entity ID """
   id: ID!
   block: BigInt!
+  """ Snapshot timestamp """
   timestamp: BigInt!
-  # total supply of veCRV
+  """ Total supply of veCRV """
   totalVeCrv: BigInt!
-  # total amount of CRV locked in contract
+  """ Total amount of CRV locked """
   totalCrvLocked: BigInt!
-  # total amount of CRV minted
+  """ Total supply of CRV """
   crvSupply: BigInt!
 }
 
 type User @entity {
+  """ Entity ID """
   id: ID!
+  """ User balance """
   balance: UserBalance! @derivedFrom(field: "user")
+  """ Locks """
   locks: [Lock!]! @derivedFrom(field: "user")
+  """ Proposals posted """
   proposals: [Proposal!]! @derivedFrom(field: "creator")
+  """ Votes participated in """
   votes: [Vote!]! @derivedFrom(field: "voter")
+  """ Gauge weight votes cast """
   gaugeWeightVotes: [GaugeWeightVote!]! @derivedFrom(field: "user")
 }
 
 type UserBalance @entity {
+  """ Entity ID """
   id: ID!
+  """ First lock tx """
   startTx: Bytes!
+  """ User address """
   user: User!
+  """ CRV locked by user """
   crvLocked: BigInt!
+  """ Lock start date """
   lockStart: BigInt!
+  """ Unlock date """
   unlockTime: BigInt!
 }
 
 type Lock @entity {
+  """ Entity ID """
   id: ID!
+  """ Address of the locking user """
   user: User!
+  """ Transaction hash """
   tx: Bytes!
+  """ Amount of CRV locked """
   value: BigInt!
+  """ Lock start date """
   lockStart: BigInt!
+  """ Unlock date """
   unlockTime: BigInt!
+  """ Previous unlock date (for relocks) """
   previousUnlockTime: BigInt!
+  """ Total amount locked """
   totalLocked: BigInt!
+  """ Total locked by user prior to this lock """
   previousTotalLocked: BigInt!
+  """ Lock type: First lock, Increase lock time, Increase lock amount, Withdraw, Lock for """
   type: LockType!
+  """ Lock timestamp """
   timestamp: BigInt!
 }
 
 ### Vote tracking
 
 type Proposal @entity {
+  """ Entity ID """
   id: ID!
+  """ Transaction hash """
   tx: Bytes!
+  """ Vote ID """
   voteId: BigInt!
+  """ Vote type (Ownership or Parameter) """
   voteType: VoteType!
+  """ User initiating the vote """
   creator: User!
+  """ Start date """
   startDate: BigInt!
+  """ Block used for the snapshot """
   snapshotBlock: BigInt!
+  """ IPFS address of the proposal's metadata """
   ipfsMetadata: String!
+  """ Decoding of the proposal's metadata (Unreliable) """
   metadata: String!
+  """ Minimum balance required """
   minBalance: BigInt!
+  """ Minimum amount of lock time """
   minTime: BigInt!
+  """ Total supply at moment of proposal"""
   totalSupply: BigInt!
+  """ Creator voting power """
   creatorVotingPower: BigInt!
+  """ Votes in favor (in voting power) """
   votesFor: BigInt!
+  """ Votes against (in voting power) """
   votesAgainst: BigInt!
+  """ List of votes """
   votes: [Vote!]! @derivedFrom(field: "proposal")
+  """ Number of individual votes cast """
   voteCount: BigInt!
+  """ Support required """
   supportRequired: BigInt!
+  """ Quorum value """
   minAcceptQuorum: BigInt!
+  """ Whether the proposal has been executed or not """
   executed: Boolean!
+  """ Execution tx details """
   execution: Execution! @derivedFrom(field: "proposal")
+  """ Proposal calldata """
   script: Bytes!
 }
 
 type Vote @entity {
+  """ Entity ID """
   id: ID!
+  """ Transaction hash """
   tx: Bytes!
+  """ Vote ID """
   voteId: BigInt!
+  """ Proposal details """
   proposal: Proposal!
+  """ Voter address and metadata """
   voter: User!
+  """ Whether the vote is for or against the proposal """
   supports: Boolean!
+  """ User voting power """
   stake: BigInt!
+  """ Vote timestamp """
   timestamp: BigInt!
 }
 
 type Execution @entity {
+  """ Entity ID """
   id: ID!
+  """ Transaction hash """
   tx: Bytes!
+  """ Vote ID """
   voteId: BigInt!
+  """ Proposal metadata """
   proposal: Proposal!
 }
 
 ### Gauges tracking
 
 type GaugeLiquidity @entity {
+  """ Entity ID """
   id: ID!
+  """ User updating the limit """
   user: Bytes!
+  """ Gauge metadata """
   gauge: Gauge!
+  """ Original user balance """
   originalBalance: BigInt!
+  """ Original total supply """
   originalSupply: BigInt!
+  """ Balance after boost has been applied """
   workingBalance: BigInt!
+  """ Total LP token amounts after boosts have been applied """
   workingSupply: BigInt!
+  """ Event timestamp """
   timestamp: BigInt!
+  """ Event block """
   block: BigInt!
+  """ Transaction hash """
   tx: Bytes!
 }
 
 type GaugeDeposit @entity {
+  """ Entity ID """
   id: ID!
+  """ Gauge metadata """
   gauge: Gauge!
+  """ Depositor address """
   provider: Bytes!
+  """ Amount deposited """
   value: BigInt!
 }
 
 type GaugeWithdraw @entity {
+  """ Entity ID """
   id: ID!
+  """ Gauge metadata """
   gauge: Gauge!
+  """ Withdrawing address """
   provider: Bytes!
+  """ Amount withdrawn """
   value: BigInt!
 }
 
 type Gauge @entity {
+  """ Entity ID """
   id: ID!
+  """ Gauge address """
   address: Bytes!
+  """ Gauge name """
   name: String!
+  """ Gauge type """
   type: GaugeType!
+  """ Platform """
   platform: Platform!
+  """ Pool address (if can be matched) """
   pool: Pool!
+  """ Whether the gauge is inactive """
   isKilled: Boolean!
+  """ Creation date """
   created: BigInt!
+  """ Creation block """
   block: BigInt!
+  """ Transaction hash """
   tx: Bytes!
 
+  """ Gauge weight history """
   weights: [GaugeWeight!] @derivedFrom(field: "gauge")
+  """ Gauge emission history """
   emissions: [Emission!] @derivedFrom(field: "gauge")
 }
 
 type Pool @entity {
+  """ Entity ID """
   id: ID!
+  """ LP Token address """
   lpToken: Bytes!
+  """ Pool address """
   address: Bytes!
+  """ Pool name """
   name: String!
+  """ Platform """
   platform: Platform!
+  """ Gauges associated """
   gauges: [Gauge!] @derivedFrom(field: "pool")
+  """ Emissions received """
   emissions: [Emission!] @derivedFrom(field: "pool")
 }
 
 type SnapshotTime @entity {
+  """ Entity ID """
   id: ID!
+  """ Platform """
   platform: Platform!
 }
 
 type GaugeWeight @entity {
+  """ Entity ID """
   id: ID!
+  """ Gauge metadata """
   gauge: Gauge!
+  """ Event timestamp """
   timestamp: BigInt!
+  """ Event block """
   block: BigInt!
+  """ Weight added """
   weight: BigDecimal!
 }
 
 type Emission @entity {
+  """ Entity ID """
   id: ID!
+  """ Gauge metadata """
   gauge: Gauge!
+  """ Pool address """
   pool: Pool!
+  """ Week timestamp """
   timestamp: BigInt!
-  block: BigInt!
+  """ CRV emissions received that week """
   crvAmount: BigDecimal!
+  """ USD value of CRV emissions """
   value: BigDecimal!
 }
 
 type GaugeType @entity {
+  """ Entity ID """
   id: ID!
+  """ Gauge type name """
   name: String!
+  """ Gauge type weight """
   weight: BigDecimal!
+  """ Number of gauges of this type """
   gaugeCount: BigInt!
+  """ Gauges of this type """
   gauges: [Gauge!] @derivedFrom(field: "type")
 }
 
 type GaugeTotalWeight @entity {
+  """ Entity ID """
   id: ID!
+  """ Timestamp for the total weight snapshot """
   timestamp: BigInt!
+  """ Block of the snapshot """
   block: BigInt!
+  """ Total weight at time of snapshot """
   weight: BigDecimal!
 }
 
 
 type GaugeWeightVote @entity {
+  """ Entity ID """
   id: ID!
+  """ Transaction hash """
   tx: Bytes!
+  """ Vote timestamp """
   timestamp: BigInt!
+  """ Voting user address """
   user: User!
+  """ Weight added """
   weight: BigDecimal!
+  """ Gauge address """
   gauge: Bytes!
 }
