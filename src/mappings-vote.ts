@@ -9,6 +9,7 @@ import { BigInt, Bytes } from '@graphprotocol/graph-ts'
 import { BIG_INT_ONE, OWNERSHIP, PARAMETER, PARAMETER_VOTING_ADDRESS } from 'const'
 import { ipfs } from '@graphprotocol/graph-ts'
 import { parseIpfsResult } from 'utils'
+import { getUser } from './services/user'
 
 export function handleStartVote(event: StartVoteEvent): void {
   const contract = Voting.bind(event.address)
@@ -17,7 +18,7 @@ export function handleStartVote(event: StartVoteEvent): void {
   proposal.tx = event.transaction.hash
   proposal.voteId = event.params.voteId
   proposal.voteType = event.address == PARAMETER_VOTING_ADDRESS ? PARAMETER : OWNERSHIP
-  proposal.creator = event.params.creator.toHexString()
+  proposal.creator = getUser(event.params.creator).id
   proposal.startDate = voteInfo.value2
   proposal.snapshotBlock = voteInfo.value3
   proposal.supportRequired = voteInfo.value4
@@ -58,7 +59,7 @@ export function handleCastVote(event: CastVoteEvent): void {
   vote.tx = event.transaction.hash
   vote.proposal = proposalId
   vote.voteId = event.params.voteId
-  vote.voter = event.params.voter.toHexString()
+  vote.voter = getUser(event.params.voter).id
   vote.supports = event.params.supports
   vote.stake = event.params.stake
   vote.timestamp = event.block.timestamp
