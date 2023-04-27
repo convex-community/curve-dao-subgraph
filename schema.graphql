@@ -241,7 +241,7 @@ type Gauge @entity {
   """ Platform """
   platform: Platform!
   """ Pool address (if can be matched) """
-  pool: Pool
+  pool: Pool!
   """ Whether the gauge is inactive """
   isKilled: Boolean!
   """ Creation date """
