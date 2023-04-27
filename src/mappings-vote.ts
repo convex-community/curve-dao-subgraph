@@ -82,6 +82,7 @@ export function handleExecuteVote(event: ExecuteVoteEvent): void {
     return
   }
   exec.tx = event.transaction.hash
+  exec.timestamp = event.block.timestamp
   exec.proposal = proposalId
   exec.voteId = event.params.voteId
   exec.save()

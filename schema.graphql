@@ -145,7 +145,7 @@ type Proposal @entity {
   """ Whether the proposal has been executed or not """
   executed: Boolean!
   """ Execution tx details """
-  execution: Execution! @derivedFrom(field: "proposal")
+  execution: Execution @derivedFrom(field: "proposal")
   """ Proposal calldata """
   script: Bytes!
 }
@@ -176,6 +176,8 @@ type Execution @entity {
   tx: Bytes!
   """ Vote ID """
   voteId: BigInt!
+  """ Execution date """
+  timestamp: BigInt!
   """ Proposal metadata """
   proposal: Proposal!
 }
@@ -239,7 +241,7 @@ type Gauge @entity {
   """ Platform """
   platform: Platform!
   """ Pool address (if can be matched) """
-  pool: Pool!
+  pool: Pool
   """ Whether the gauge is inactive """
   isKilled: Boolean!
   """ Creation date """
